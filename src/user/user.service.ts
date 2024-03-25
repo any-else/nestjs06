@@ -32,15 +32,25 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async login(user) {
+    /**
+     * check user có tồn tại hay không ?
+     *  if tồn tại =>
+     *        kiểm tra password
+     *    - sai: trả về lỗi là thông tin tài khoản mk ko chính xác
+     *    - đúng thì trả về message đăng nhập thành công
+     */
 
-  update(id: number, updateUserDto: any) {
-    return `This action updates a #${id} user`;
-  }
+    const findUser = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    if (!findUser)
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+
+    if (findUser.password !== user.password)
+      throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
+
+    return 'login successfully';
   }
 }
