@@ -3,7 +3,7 @@ import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TodoEntity } from '../entities/todo.entity';
-import { Repository } from 'typeorm';
+import { And, ILike, Repository } from 'typeorm';
 
 @Injectable()
 export class TodoService {
@@ -11,20 +11,23 @@ export class TodoService {
     @InjectRepository(TodoEntity)
     private readonly todoRepository: Repository<TodoEntity>,
   ) {}
+
   async create(todo: any) {
     const newTodo = this.todoRepository.create(todo);
     await this.todoRepository.save(newTodo);
     return 'add todo successfully';
   }
 
-  async findAll() {
-    const data = await this.todoRepository.find({
-      relations: ['user_id'],
-    });
-
+  async findAll(limit) {
+    // const data = await this.todoRepository.find({
+    //   relations: ['user_id'],
+    // });
+    console.log('limit', limit);
     const data2 = await this.todoRepository
       .createQueryBuilder('todo')
       .innerJoinAndSelect('todo.user_id', 'users')
+      .take(limit)
+      .orderBy('todo.todo_name', 'DESC')
       .getMany();
 
     return {
@@ -76,5 +79,40 @@ export class TodoService {
   async remove(id: number) {
     await this.todoRepository.delete({ todo_id: id });
     return `This action removes a #${id} todo`;
+  }
+
+  async search(q: any) {
+    const data = await this.todoRepository.findBy({
+      todo_name: ILike(`%${q}%`),
+    });
+
+    return {
+      message: 'Tìm kiếm thành công',
+      data: data,
+    };
+  }
+
+  /** api phân trang  cứ 1 page sẽ hiện thị ra 2 phần tử */
+
+  async pagination(limit, page) {
+    const res = await this.todoRepository
+      .createQueryBuilder('todo')
+      .innerJoinAndSelect('todo.user_id', 'users')
+      .skip((page - 1) * limit)
+      .take(Number(limit))
+      .getMany();
+
+    return res;
+  }
+
+  async groupTodo() {
+    const data = await this.todoRepository
+      .createQueryBuilder('todo')
+      .leftJoinAndSelect('todo.user_id', 'users')
+      .groupBy('todo.todo_id')
+      .getRawMany();
+
+    console.log(data);
+    return data;
   }
 }
