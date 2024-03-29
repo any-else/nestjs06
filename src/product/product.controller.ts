@@ -9,13 +9,13 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 
-@Controller('product')
+@Controller('api/v1/product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
-  create(@Body() createProductDto: any) {
-    return this.productService.create(createProductDto);
+  @Post('/create')
+  create(@Body() product: any) {
+    return this.productService.create(product);
   }
 
   @Get()

@@ -24,5 +24,7 @@ export class BillProductEntity {
 
 /**
  *  Xây dưng API CRUD product, bill
- *  + Search Product, Search bill
+ *  + Search Product, Search billproduct_id
+ *
+ *  R: lấy bill và join tới bảng product để tính tổng số tiền của bill đấy
  */
