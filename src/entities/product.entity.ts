@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BillEntity } from './bill.entity';
+import { BillProductEntity } from './bill_product.entity';
 
 @Entity({ name: 'product' })
 export class ProductEntity {
@@ -20,6 +27,6 @@ export class ProductEntity {
   })
   quantity: number;
 
-  @ManyToMany(() => BillEntity, (b) => b.product)
-  bill: BillEntity[];
+  @OneToMany(() => BillProductEntity, (bp) => bp.product_id)
+  bill_product: BillEntity[];
 }

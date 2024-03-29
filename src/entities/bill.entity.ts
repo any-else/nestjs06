@@ -3,9 +3,11 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProductEntity } from './product.entity';
+import { BillProductEntity } from './bill_product.entity';
 @Entity({ name: 'bill' })
 export class BillEntity {
   @PrimaryGeneratedColumn({
@@ -21,17 +23,6 @@ export class BillEntity {
   @Column({ type: 'timestamp' })
   date_time: Date;
 
-  @ManyToMany(() => ProductEntity, (p) => p.bill)
-  @JoinTable({
-    name: 'product_bill',
-    joinColumn: {
-      name: 'bill_id',
-      referencedColumnName: 'bill_id',
-    },
-    inverseJoinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'product_id',
-    },
-  })
-  product: ProductEntity[];
+  @OneToMany(() => BillProductEntity, (bp) => bp.bill_id)
+  bill_product: BillProductEntity[];
 }

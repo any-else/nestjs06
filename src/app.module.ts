@@ -8,6 +8,7 @@ import { ProductModule } from './product/product.module';
 import { BillModule } from './bill/bill.module';
 import { BillEntity } from './entities/bill.entity';
 import { ProductEntity } from './entities/product.entity';
+import { BillProductEntity } from './entities/bill_product.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,13 @@ import { ProductEntity } from './entities/product.entity';
       username: 'root',
       password: 'vuvanbui@18',
       database: 'nestjs06',
-      entities: [UserEntity, TodoEntity, BillEntity, ProductEntity],
+      entities: [
+        UserEntity,
+        TodoEntity,
+        BillEntity,
+        ProductEntity,
+        BillProductEntity,
+      ],
       synchronize: true,
     }),
     UserModule,
